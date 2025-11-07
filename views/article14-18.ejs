@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CivicsQuest</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #e6f2f5;
+      }
+      .nav {
+        background-color: transparent;
+        display: flex;
+        padding: 10px;
+        border: none;
+        font-size: 15px;
+        padding-top: 20px;
+        width: 100%;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+      }
+      .nav div {
+        margin: 20px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 8px;
+        border-radius: 30%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav div a {
+        text-decoration: none;
+        color: #333;
+        font-size: 20px;
+      }
+      .nav div ::after {
+        content: "";
+        display: block;
+        height: 4px;
+        width: 100%;
+        background-color: brown;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+      .nav div a:hover::after {
+        transform: scaleX(1);
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+      }
+      .view-all-parts {
+        background-color: #404978;
+        color: white;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+      }
+      .view-all-parts::before {
+        content: "≡";
+        margin-right: 10px;
+      }
+      .content {
+        display: flex;
+        align-items: flex-start;
+        margin-top: 60px;
+      }
+      .part-number {
+        font-size: 120px;
+        font-weight: bold;
+        color: #404978;
+        line-height: 0.8;
+        margin-right: 20px;
+        position: relative;
+        height: 250px;
+      }
+      .part-number img {
+        height: 100%;
+      }
+      .part-number::before {
+        content: "PART";
+        font-size: 16px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: rotate(-90deg) translate(-100%, -100%);
+        transform-origin: top left;
+      }
+      .part-number .pink-part {
+        color: #f8d0d8;
+      }
+      .icon {
+        width: 30px;
+        height: 30px;
+        background-color: #f8d0d8;
+        border-radius: 50%;
+        position: absolute;
+      }
+      .icon-top {
+        top: -20px;
+        right: -20px;
+      }
+      .icon-bottom {
+        bottom: -10px;
+        left: -10px;
+      }
+      .text-content {
+        flex-grow: 1;
+      }
+      h2 {
+        color: #404978;
+        font-size: 16px;
+        margin: 0 0 10px;
+      }
+      h1 {
+        color: #404978;
+        font-size: 48px;
+        margin: 0 0 20px;
+        font-weight: normal;
+      }
+      p {
+        color: #404978;
+        font-size: 18px;
+        line-height: 1.5;
+        margin: 0 0 20px;
+      }
+      .read-more {
+        color: #404978;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .read-more::after {
+        content: "↓";
+        margin-left: 5px;
+      }
+      .navigation-menu {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 300px;
+        height: 100%;
+        background-color: #404978;
+        transition: left 0.3s ease-in-out;
+        z-index: 1000;
+        overflow-y: auto;
+      }
+      .navigation-menu.active {
+        left: 0;
+      }
+      .navigation-menu ul {
+        list-style-type: none;
+        padding: 20px;
+        margin: 0;
+      }
+      .navigation-menu ul li {
+        margin-bottom: 10px;
+      }
+      .navigation-menu ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        display: block;
+        padding: 10px;
+        border-radius: 5px;
+        transition: background-color 0.2s;
+      }
+      .navigation-menu ul li a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      .article-range {
+        text-align: center;
+        color: #666;
+        font-weight: normal;
+        font-size: 24px;
+        margin-bottom: 30px;
+      }
+      .article-list {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      .article-list td {
+        padding: 15px 10px;
+        border-bottom: 1px solid #e0e0e0;
+        vertical-align: top;
+      }
+      .article-list tr:last-child td {
+        border-bottom: none;
+      }
+      .category {
+        font-weight: bold;
+        color: #444;
+        width: 30%;
+      }
+      .articles {
+        width: 70%;
+      }
+      .article {
+        margin-top: 15px;
+      }
+      .article:last-child {
+        margin-bottom: 0;
+      }
+      .seccontainer {
+        background-color: rgb(224, 240, 224);
+        display: flex;
+        justify-content: center;
+      }
+      .seccontainer div {
+        padding-top: 20px;
+      }
+      .navigation-container {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background-color: #e0f0e0;
+      }
+
+      .nav-button {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #666;
+        background-color: transparent;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .nav-button:hover {
+        background-color: #d0e0d0;
+      }
+
+      .seccontainer {
+        margin-top: 100px;
+      }
+      .seccontainer div {
+        padding: 30px;
+      }
+
+      .container p {
+        align-items: center;
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .text {
+        margin-top: 10px;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      .ar15 {
+        height: 500px;
+        background-color: #e6f7ff;
+      }
+      .ar15 h1 {
+        text-align: center;
+        padding: 30px;
+        padding-left: 60px;
+      }
+      .ar14 p {
+        text-align: center;
+      }
+      .ar16 {
+        background-color: #d0e0d0;
+      }
+      .ar16 p {
+        text-align: center;
+      }
+      .example {
+        background-color: #e6f7ff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      .seesaw {
+        width: 300px;
+        height: 150px;
+        position: relative;
+        margin: 20px auto;
+      }
+      .beam {
+        width: 280px;
+        height: 10px;
+        background-color: #333;
+        position: absolute;
+        top: 70px;
+        left: 10px;
+        transform-origin: center;
+        transition: transform 0.5s ease-out;
+      }
+      .weight {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        position: absolute;
+        bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        color: white;
+        transition: transform 0.5s ease-out;
+      }
+      .weight-a {
+        left: 20px;
+        background-color: #ff6b6b;
+      }
+      .weight-b {
+        right: 20px;
+        background-color: #4ecdc4;
+      }
+      .controls {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+      button {
+        padding: 5px 10px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      #message {
+        margin-top: 20px;
+        font-weight: bold;
+      }
+      #chat-widget {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 1000;
+      }
+      #chat-container {
+        width: 300px;
+        height: 400px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+        transform: scale(0);
+        transform-origin: bottom left;
+      }
+      #chat-container.active {
+        transform: scale(1);
+      }
+      #chat-header {
+        background-color: #4a90e2;
+        color: white;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      #chat-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 15px;
+        background-color: #f9f9f9;
+      }
+      #user-input-container {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: #ffffff;
+        border-top: 1px solid #e0e0e0;
+      }
+      #user-input {
+        flex-grow: 1;
+        padding: 8px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 20px;
+        font-size: 14px;
+        outline: none;
+      }
+      #send-button {
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        margin-left: 8px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #send-button svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+      }
+      .message {
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        border-radius: 18px;
+        max-width: 80%;
+        word-wrap: break-word;
+      }
+      .user {
+        background-color: #4a90e2;
+        color: white;
+        align-self: flex-end;
+        margin-left: auto;
+      }
+      .bot {
+        background-color: #e9e9e9;
+        color: #333;
+      }
+      #chat-toggle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #4a90e2;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+      #chat-toggle svg {
+        width: 30px;
+        height: 30px;
+        fill: currentColor;
+      }
+      .commcont {
+        background-color: #d0e0d0;
+        padding: 30px;
+      }
+      .comment-cont {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #e6f7ff;
+        border-radius: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .comment-section {
+        margin-right: 30px;
+        padding: 30px;
+      }
+
+      h2 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+      }
+
+      .comment-form {
+        margin-bottom: 30px;
+      }
+
+      .comment-form textarea,
+      .comment-form input[type="email"] {
+        width: 100%;
+        padding: 15px;
+        margin-right: 250px;
+        border: 1px solid var(--light-gray);
+        border-radius: var(--border-radius);
+        font-size: 16px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .comment-form textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .comment-form input[type="email"] {
+        height: 30px;
+        width: 200px;
+        border-radius: 20px;
+        margin-top: 10px;
+        text-align: center;
+      }
+
+      .comment-form textarea:focus,
+      .comment-form input[type="text"]:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+      }
+
+      .comment-form button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        height: 60px;
+        width: 200px;
+        border-radius: 20px;
+        margin-top: 10px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.1s ease;
+      }
+
+      .comment-form button:hover {
+        background-color: #3a7bc8;
+      }
+
+      .comment-form button:active {
+        transform: scale(0.98);
+      }
+
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <div><a href="/">HOME</a></div>
+      <div><a href="#article">LEARN</a></div>
+      <div><a href="home">DASHBOARD</a></div>
+      <div><a href="/auth/signin">LOGIN/SIGNUP</a></div>
+    </div>
+    <nav class="navigation-menu" id="navigationMenu">
+      <ul>
+        <li><a href="#part1">Right to Equality (Articles 14-18)</a></li>
+        <li><a href="#part2">Right to Freedom (Articles 19-22)</a></li>
+        <li>
+          <a href="#part3">Right against Exploitation (Articles 23-24)</a>
+        </li>
+        <li>
+          <a href="#part4">Right to Freedom of Religion (Articles 25-28)</a>
+        </li>
+        <li>
+          <a href="#part5">Cultural and Educational Rights (Articles 29-30) </a>
+        </li>
+        <li>
+          <a href="#part6">Right to Constitutional Remedies (Article 32)</a>
+        </li>
+        <li><a href="#part7">Saving of Laws (Articles 33-35)</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <button class="view-all-parts" id="viewAllPartsBtn">
+        VIEW ALL PARTS
+      </button>
+      <div class="content">
+        <div class="part-number">
+          <img src="./image/3.png" alt="" />
+        </div>
+        <div class="text-content">
+          <h2>PART 3</h2>
+          <h1>Right to Equality(14-18)</h1>
+          <p>
+            Part III of the Constitution deal with Fundamental Rights. These
+            are: Right to equality, including equality before law, prohibition
+            of discrimination on grounds of religion, race, caste, sex or place
+            of birth, and equality of opportunity in matters of employment.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="seccontainer">
+      <div class="container">
+        <h1>Article 14: Equality Before Law</h1>
+        <p>
+          *The State shall not deny to any person equality before the law or the
+          equal protection of the laws within the territory of India.
+        </p>
+        <p>
+          *No one is above the law, not even the government or its officials.
+          Everyone is subject to the same laws and is entitled to the same legal
+          protection
+        </p>
+        <p>
+          * Article 14 prohibits discrimination by the state against any
+          individual or group. For instance, the government cannot make laws
+          that apply differently to different people without a valid reason.
+        </p>
+        <p>
+          *In Simple Words: Article 14 ensures that everyone is treated equally
+          by the law and has equal access to legal protection. It prevents any
+          unfair or unreasonable discrimination by the state. However, it also
+          recognizes that treating everyone exactly the same is not always fair
+          and allows for different treatment where there is a reasonable basis,
+          such as helping disadvantaged groups to achieve true equality.
+        </p>
+      </div>
+    </div>
+    <div class="ar15">
+      <div class="container">
+        <h1>
+          Article 15: Prohibition of discrimination on grounds of religion,
+          race, caste, sex or place of birth
+        </h1>
+        <p>
+          *No citizen shall, on grounds only of religion, race, caste, sex,
+          place of birth or any of them, be subject to any disability,
+          liability, restriction or condition with regard to—
+        </p>
+        <p>
+          (a) access to shops, public restaurants, hotels and places of public
+          entertainment; or
+        </p>
+        <p>
+          (b) The use of wells, tanks, bathing ghats, roads and places of public
+          resort maintained wholly or partly out of State funds or dedicated to
+          the use of the general public.
+        </p>
+        <p>
+          * Nothing in this article shall prevent the State from making any
+          special provision for women and children.
+        </p>
+      </div>
+    </div>
+    <div class="ar16">
+      <div class="container">
+        <h1>
+          Article 16:Equality of opportunity in matters of public employment
+        </h1>
+        <p>
+          *Article 16 ensures that everyone has an equal chance to compete for
+          government jobs, regardless of their background, thereby promoting
+          fairness and justice.
+        </p>
+        <p>
+          * It protects against discrimination based on religion, race, caste,
+          sex, and other irrelevant factors, ensuring that employment decisions
+          are based on merit rather than bias.
+        </p>
+        <p>
+          * By allowing reservations, Article 16 promotes the inclusion of
+          underrepresented communities in public employment. This helps to
+          correct historical injustices and ensures that disadvantaged groups
+          have equal opportunities to work in government jobs
+        </p>
+      </div>
+    </div>
+    <div class="ar17">
+      <div class="container">
+        <h1>Article 17:Abolition of Untouchability</h1>
+        <p>
+          *Article 17 declares that "untouchability" is abolished and its
+          practice in any form is forbidden. This means that no one can
+          discriminate against anyone else by treating them as "untouchable."
+        </p>
+        <p>
+          * Article 17 prohibits anyone from enforcing or encouraging the
+          practice of untouchability. Any action or behavior that discriminates
+          against individuals based on this outdated and discriminatory practice
+          is illegal.
+        </p>
+        <p>
+          * Article 17 abolishes the practice of "untouchability" in India and
+          forbids anyone from discriminating against others based on this
+          practice. It ensures that all citizens, regardless of their caste or
+          background, are treated equally and with dignity. The article also
+          provides for legal action and punishment against those who practice or
+          promote untouchability, making it a powerful tool for achieving social
+          justice and equality.
+        </p>
+      </div>
+    </div>
+    <div class="seccontainer">
+      <div class="container">
+        <h1>Article 18: Abolition of titles</h1>
+        <p>
+          * The aim is to promote equality and prevent any form of
+          discrimination or social hierarchy based on titles.
+        </p>
+        <p>
+          * Indian citizens are prohibited from accepting any titles from
+          foreign countries without the consent of the President of India. This
+          rule is in place to ensure that Indian citizens remain loyal to their
+          country and do not hold any allegiance to foreign nations.
+        </p>
+        <p>
+          * By abolishing titles, Article 18 ensures that no individual is
+          considered superior or inferior based on a title. This helps in
+          creating a society where all individuals are seen as equal.
+        </p>
+        <p>
+          * In Simple Words: Article 18 abolishes all titles in India, except
+          for academic and military distinctions, to promote equality and
+          discourage any form of social hierarchy based on titles. It ensures
+          that no one is considered superior or inferior based on titles, and
+          Indian citizens cannot accept foreign titles without government
+          permission. This helps in fostering a more equal and united society.
+        </p>
+      </div>
+    </div>
+    <div class="example">
+      <h2>Equality Rights Seesaw</h2>
+      <div class="seesaw">
+        <div class="beam"></div>
+        <div class="weight weight-a">A</div>
+        <div class="weight weight-b">B</div>
+      </div>
+      <div class="controls">
+        <div>
+          <button onclick="adjustWeight('left', 10)">+</button>
+          <button onclick="adjustWeight('left', -10)">-</button>
+        </div>
+        <div>
+          <button onclick="adjustWeight('right', 10)">+</button>
+          <button onclick="adjustWeight('right', -10)">-</button>
+        </div>
+      </div>
+      <p id="message"></p>
+    </div>
+    <div id="chat-widget">
+      <div id="chat-toggle">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
+          />
+        </svg>
+      </div>
+      <div id="chat-container">
+        <div id="chat-header">Chat Bot</div>
+        <div id="chat-messages"></div>
+        <div id="user-input-container">
+          <input
+            type="text"
+            id="user-input"
+            placeholder="Type your message..."
+          />
+          <button id="send-button">
+            <svg viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="commcont">
+      <div class="comment-cont">
+        <div class="comment-section">
+          <h2>Comments</h2>
+          <div class="comment-form">
+            <textarea placeholder="Write your comment here..."></textarea>
+            <input type="email" placeholder="Your Email-Id" />
+            <button type="submit">Post Comment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const viewAllPartsBtn = document.getElementById("viewAllPartsBtn");
+      const navigationMenu = document.getElementById("navigationMenu");
+
+      viewAllPartsBtn.addEventListener("click", () => {
+        navigationMenu.classList.toggle("active");
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener("click", (event) => {
+        if (
+          !navigationMenu.contains(event.target) &&
+          event.target !== viewAllPartsBtn
+        ) {
+          navigationMenu.classList.remove("active");
+        }
+      });
+
+      // Example function to load content (you would implement this to fetch and display the selected part)
+      function loadPart(partId) {
+        // This is a placeholder function. In a real application, you would fetch the content for the selected part
+        // and update the page accordingly.
+        console.log(`Loading content for ${partId}`);
+        // Update page content here
+        navigationMenu.classList.remove("active");
+      }
+
+      // Add click event listeners to navigation links
+      document.querySelectorAll(".navigation-menu a").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const partId = e.target.getAttribute("href").substring(1);
+          loadPart(partId);
+        });
+      });
+      const prevButton = document.getElementById("prevButton");
+      const nextButton = document.getElementById("nextButton");
+      const elements = document.querySelectorAll(".navigable-element"); // Add this class to elements you want to navigate between
+
+      let leftWeight = 50;
+      let rightWeight = 50;
+      const beam = document.querySelector(".beam");
+      const weightA = document.querySelector(".weight-a");
+      const weightB = document.querySelector(".weight-b");
+      const message = document.getElementById("message");
+
+      function adjustWeight(side, amount) {
+        if (side === "left") {
+          leftWeight = Math.max(0, Math.min(100, leftWeight + amount));
+          rightWeight = Math.max(0, Math.min(100, rightWeight - amount));
+        } else {
+          rightWeight = Math.max(0, Math.min(100, rightWeight + amount));
+          leftWeight = Math.max(0, Math.min(100, leftWeight - amount));
+        }
+        updateSeesaw();
+      }
+
+      function updateSeesaw() {
+        const rotation = (leftWeight - rightWeight) / 2;
+        beam.style.transform = `rotate(${rotation}deg)`;
+        weightA.style.transform = `translateY(${-(leftWeight - 50)}px)`;
+        weightB.style.transform = `translateY(${-(rightWeight - 50)}px)`;
+
+        if (leftWeight === rightWeight) {
+          message.textContent = "Perfect balance! This represents equality.";
+        } else {
+          message.textContent =
+            "Unequal rights lead to imbalance. Try to achieve equilibrium!";
+        }
+      }
+
+      updateSeesaw();
+      const chatWidget = document.getElementById("chat-widget");
+      const chatToggle = document.getElementById("chat-toggle");
+      const chatContainer = document.getElementById("chat-container");
+      const chatMessages = document.getElementById("chat-messages");
+      const userInput = document.getElementById("user-input");
+      const sendButton = document.getElementById("send-button");
+
+      const botResponses = {
+        hello: "Hello! How may I assist you today?",
+        help: "I'm here to help! What would you like to know?",
+        bye: "Goodbye! Feel free to chat again if you have more questions.",
+        default:
+          "I'm not sure about that. Can you please rephrase or ask something else?",
+      };
+
+      function addMessage(message, sender) {
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("message", sender);
+        messageElement.textContent = message;
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function getBotResponse(message) {
+        message = message.toLowerCase();
+        for (const key in botResponses) {
+          if (message.includes(key)) {
+            return botResponses[key];
+          }
+        }
+        return botResponses.default;
+      }
+
+      function sendMessage() {
+        const message = userInput.value.trim();
+        if (message) {
+          addMessage(message, "user");
+          userInput.value = "";
+
+          setTimeout(() => {
+            const botResponse = getBotResponse(message);
+            addMessage(botResponse, "bot");
+          }, 500);
+        }
+      }
+
+      chatToggle.addEventListener("click", () => {
+        chatContainer.classList.toggle("active");
+      });
+
+      userInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      });
+
+      sendButton.addEventListener("click", sendMessage);
+
+      // Initial bot message
+      addMessage("Hello! How can I help you today?", "bot");
+    </script>
+  </body>
+</html>
