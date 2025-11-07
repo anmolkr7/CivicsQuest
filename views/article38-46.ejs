@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CivicsQuest</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #e6f2f5;
+      }
+      .nav {
+        background-color: transparent;
+        display: flex;
+        padding: 10px;
+        border: none;
+        font-size: 15px;
+        padding-top: 20px;
+        width: 100%;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+      }
+      .nav div {
+        margin: 20px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 8px;
+        border-radius: 30%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav div a {
+        text-decoration: none;
+        color: #333;
+        font-size: 20px;
+      }
+      .nav div ::after {
+        content: "";
+        display: block;
+        height: 4px;
+        width: 100%;
+        background-color: brown;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+      .nav div a:hover::after {
+        transform: scaleX(1);
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-bottom: 30px;
+      }
+      .view-all-parts {
+        background-color: #404978;
+        color: white;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+      }
+      .view-all-parts::before {
+        content: "≡";
+        margin-right: 10px;
+      }
+      .content {
+        display: flex;
+        align-items: flex-start;
+        margin-top: 60px;
+      }
+      .part-number {
+        font-size: 120px;
+        font-weight: bold;
+        color: #404978;
+        line-height: 0.8;
+        margin-right: 20px;
+        position: relative;
+        height: 250px;
+      }
+      .part-number img {
+        height: 100%;
+      }
+      .part-number::before {
+        content: "PART";
+        font-size: 16px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: rotate(-90deg) translate(-100%, -100%);
+        transform-origin: top left;
+      }
+      .part-number .pink-part {
+        color: #f8d0d8;
+      }
+      .icon {
+        width: 30px;
+        height: 30px;
+        background-color: #f8d0d8;
+        border-radius: 50%;
+        position: absolute;
+      }
+      .icon-top {
+        top: -20px;
+        right: -20px;
+      }
+      .icon-bottom {
+        bottom: -10px;
+        left: -10px;
+      }
+      .text-content {
+        flex-grow: 1;
+      }
+      h2 {
+        color: #404978;
+        font-size: 16px;
+        margin: 0 0 10px;
+      }
+      h1 {
+        color: #404978;
+        font-size: 48px;
+        margin: 0 0 20px;
+        font-weight: normal;
+      }
+      p {
+        color: #404978;
+        font-size: 18px;
+        line-height: 1.5;
+        margin: 0 0 20px;
+      }
+      .read-more {
+        color: #404978;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .read-more::after {
+        content: "↓";
+        margin-left: 5px;
+      }
+      .navigation-menu {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 300px;
+        height: 100%;
+        background-color: #404978;
+        transition: left 0.3s ease-in-out;
+        z-index: 1000;
+        overflow-y: auto;
+      }
+      .navigation-menu.active {
+        left: 0;
+      }
+      .navigation-menu ul {
+        list-style-type: none;
+        padding: 20px;
+        margin: 0;
+      }
+      .navigation-menu ul li {
+        margin-bottom: 10px;
+      }
+      .navigation-menu ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        display: block;
+        padding: 10px;
+        border-radius: 5px;
+        transition: background-color 0.2s;
+      }
+      .navigation-menu ul li a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      .article-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        margin-top: 30px;
+      }
+      .article-card {
+        width: 220px;
+        height: 280px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        cursor: pointer;
+        position: relative;
+      }
+      .article-card:hover {
+        transform: scale(1.05);
+      }
+      .article-image {
+        width: 100%;
+        height: 160px;
+        background-size: cover;
+        background-position: center;
+      }
+      .article-text {
+        padding: 10px;
+        text-align: center;
+        font-size: 16px;
+        color: #404978;
+        font-weight: bold;
+      }
+      .article-number {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #404978;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 14px;
+      }
+      #animationContainer {
+        width: 100%;
+        height: 300px;
+        background-color: #f0f0f0;
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        color: #404978;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 10px;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      #chat-widget {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 1000;
+      }
+      #chat-container {
+        width: 300px;
+        height: 400px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+        transform: scale(0);
+        transform-origin: bottom left;
+      }
+      #chat-container.active {
+        transform: scale(1);
+      }
+      #chat-header {
+        background-color: #4a90e2;
+        color: white;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      #chat-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 15px;
+        background-color: #f9f9f9;
+      }
+      #user-input-container {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: #ffffff;
+        border-top: 1px solid #e0e0e0;
+      }
+      #user-input {
+        flex-grow: 1;
+        padding: 8px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 20px;
+        font-size: 14px;
+        outline: none;
+      }
+      #send-button {
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        margin-left: 8px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #send-button svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+      }
+      .message {
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        border-radius: 18px;
+        max-width: 80%;
+        word-wrap: break-word;
+      }
+      .user {
+        background-color: #4a90e2;
+        color: white;
+        align-self: flex-end;
+        margin-left: auto;
+      }
+      .bot {
+        background-color: #e9e9e9;
+        color: #333;
+      }
+      #chat-toggle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #4a90e2;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+      #chat-toggle svg {
+        width: 30px;
+        height: 30px;
+        fill: currentColor;
+      }
+      .commcont {
+        background-color: #d0e0d0;
+        padding: 30px;
+      }
+      .comment-cont {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #e6f7ff;
+        border-radius: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .comment-section {
+        margin-right: 30px;
+        padding: 30px;
+      }
+
+      h2 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+      }
+
+      .comment-form {
+        margin-bottom: 30px;
+      }
+
+      .comment-form textarea,
+      .comment-form input[type="email"] {
+        width: 100%;
+        padding: 15px;
+        margin-right: 250px;
+        border: 1px solid var(--light-gray);
+        border-radius: var(--border-radius);
+        font-size: 16px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .comment-form textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .comment-form input[type="email"] {
+        height: 30px;
+        width: 200px;
+        border-radius: 20px;
+        margin-top: 10px;
+        text-align: center;
+      }
+
+      .comment-form textarea:focus,
+      .comment-form input[type="text"]:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+      }
+
+      .comment-form button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        height: 60px;
+        width: 200px;
+        border-radius: 20px;
+        margin-top: 10px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.1s ease;
+      }
+
+      .comment-form button:hover {
+        background-color: #3a7bc8;
+      }
+
+      .comment-form button:active {
+        transform: scale(0.98);
+      }
+
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <div><a href="/">HOME</a></div>
+      <div><a href="#article">LEARN</a></div>
+      <div><a href="home">DASHBOARD</a></div>
+      <div><a href="/auth/signin">LOGIN/SIGNUP</a></div>
+    </div>
+    <nav class="navigation-menu" id="navigationMenu">
+      <ul>
+        <li>
+          <a href="#article38"
+            >Article 38: Welfare of the people through social justice</a
+          >
+        </li>
+        <li>
+          <a href="#article39"
+            >Article 39: Equal rights to livelihood, resource distribution,
+            child protection</a
+          >
+        </li>
+        <li>
+          <a href="#article39A">Article 39A: Equal justice and legal aid</a>
+        </li>
+        <li>
+          <a href="#article41"
+            >Article 41: Right to work, education, and public assistance</a
+          >
+        </li>
+        <li>
+          <a href="#article42"
+            >Article 42: Humane conditions of work and maternity relief</a
+          >
+        </li>
+        <li><a href="#article43">Article 43: Living wage for workers</a></li>
+        <li>
+          <a href="#article43A"
+            >Article 43A: Workers' participation in management</a
+          >
+        </li>
+        <li>
+          <a href="#article45"
+            >Article 45: Early childhood care and education</a
+          >
+        </li>
+        <li>
+          <a href="#article46"
+            >Article 46: Promotion of educational and economic interests of SCs,
+            STs, and weaker sections</a
+          >
+        </li>
+      </ul>
+    </nav>
+    <div class="container">
+      <button class="view-all-parts" id="viewAllPartsBtn">
+        VIEW ALL PARTS
+      </button>
+      <div class="content">
+        <div class="part-number">
+          <img src="./image/4.png" alt="Ashoka Chakra" />
+        </div>
+        <div class="text-content">
+          <h2>PART IV</h2>
+          <h1>Social Welfare and Justice</h1>
+          <p>
+            Articles 38 to 46 of the Indian Constitution lay down the principles
+            of Social Welfare and Justice, guiding the state to ensure social
+            and economic welfare for all citizens, especially the
+            underprivileged and marginalized sections.
+          </p>
+        </div>
+      </div>
+      <div class="article-container" id="articleContainer">
+        <div class="article-card" data-article="38">
+          <div
+            class="article-image"
+            style="background-image: url('https://example.com/image38.jpg')"
+          ></div>
+          <div class="article-text">
+            Article 38: Welfare of the people through social justice
+          </div>
+          <div class="article-number">38</div>
+        </div>
+        <div class="article-card" data-article="39">
+          <div
+            class="article-image"
+            style="background-image: url('https://example.com/image39.jpg')"
+          ></div>
+          <div class="article-text">
+            Article 39: Equal rights to livelihood, resource distribution, child
+            protection
+          </div>
+          <div class="article-number">39</div>
+        </div>
+        <div class="article-card" data-article="39A">
+          <div
+            class="article-image"
+            style="background-image: url('https://example.com/image39A.jpg')"
+          ></div>
+          <div class="article-text">
+            Article 39A: Equal justice and legal aid
+          </div>
+          <div class="article-number">39A</div>
+        </div>
+        <div class="article-card" data-article="41">
+          <div
+            class="article-image"
+            style="background-image: url('https://example.com/image41.jpg')"
+          ></div>
+          <div class="article-text">
+            Article 41: Right to work, education, and public assistance
+          </div>
+          <div class="article-number">41</div>
+        </div>
+        <div class="article-card" data-article="42">
+          <div
+            class="article-image"
+            style="background-image: url('https://example.com/image42.jpg')"
+          ></div>
+          <div class="article-text">
+            Article 42: Humane conditions of work and maternity relief
+          </div>
+          <div class="article-number">42</div>
+        </div>
+        <div class="article-card" data-article="43">
+          <div
+            class="article-image"
+            style="background-image: url('https://example.com/image43.jpg')"
+          ></div>
+          <div class="article-text">Article 43: Living wage for workers</div>
+          <div class="article-number">43</div>
+        </div>
+        <div class="article-card" data-article="43A">
+          <div
+            class="article-image"
+            style="background-image: url('https://example.com/image43A.jpg')"
+          ></div>
+          <div class="article-text">
+            Article 43A: Workers' participation in management
+          </div>
+          <div class="article-number">43A</div>
+        </div>
+        <div class="article-card" data-article="45">
+          <div
+            class="article-image"
+            style="background-image: url('https://example.com/image45.jpg')"
+          ></div>
+          <div class="article-text">
+            Article 45: Early childhood care and education
+          </div>
+          <div class="article-number">45</div>
+        </div>
+        <div class="article-card" data-article="46">
+          <div
+            class="article-image"
+            style="background-image: url('https://example.com/image46.jpg')"
+          ></div>
+          <div class="article-text">
+            Article 46: Promotion of educational and economic interests of SCs,
+            STs, and weaker sections
+          </div>
+          <div class="article-number">46</div>
+        </div>
+      </div>
+      <div id="animationContainer"></div>
+    </div>
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitle"></h2>
+        <p id="modalDescription"></p>
+      </div>
+    </div>
+    <div id="chat-widget">
+      <div id="chat-toggle">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
+          />
+        </svg>
+      </div>
+      <div id="chat-container">
+        <div id="chat-header">Chat Bot</div>
+        <div id="chat-messages"></div>
+        <div id="user-input-container">
+          <input
+            type="text"
+            id="user-input"
+            placeholder="Type your message..."
+          />
+          <button id="send-button">
+            <svg viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="commcont">
+      <div class="comment-cont">
+        <div class="comment-section">
+          <h2>Comments</h2>
+          <div class="comment-form">
+            <textarea placeholder="Write your comment here..."></textarea>
+            <input type="email" placeholder="Your Email-Id" />
+            <button type="submit">Post Comment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const viewAllPartsBtn = document.getElementById("viewAllPartsBtn");
+      const navigationMenu = document.getElementById("navigationMenu");
+      const articleCards = document.querySelectorAll(".article-card");
+      const modal = document.getElementById("myModal");
+      const closeModalBtn = document.querySelector(".close");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalDescription = document.getElementById("modalDescription");
+      const animationContainer = document.getElementById("animationContainer");
+
+      viewAllPartsBtn.addEventListener("click", () => {
+        navigationMenu.classList.toggle("active");
+      });
+
+      document.addEventListener("click", (event) => {
+        if (
+          !navigationMenu.contains(event.target) &&
+          !viewAllPartsBtn.contains(event.target)
+        ) {
+          navigationMenu.classList.remove("active");
+        }
+      });
+
+      articleCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          const article = card.dataset.article;
+          showArticleExplanation(article);
+        });
+      });
+
+      closeModalBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+
+      window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+
+      function showArticleExplanation(article) {
+        let title = "";
+        let description = "";
+
+        switch (article) {
+          case "38":
+            title = "Article 38: Welfare of the people through social justice";
+            description =
+              "The state shall strive to promote the welfare of the people by securing and protecting a social order in which justice, social, economic, and political, shall inform all the institutions of the national life.";
+            break;
+          case "39":
+            title =
+              "Article 39: Equal rights to livelihood, resource distribution, child protection";
+            description =
+              "The state shall, in particular, direct its policy towards securing: (a) that the citizens, men and women equally, have the right to an adequate means of livelihood; (b) that the ownership and control of the material resources of the community are so distributed as best to subserve the common good; (c) that the operation of the economic system does not result in the concentration of wealth and means of production to the common detriment; (d) that there is equal pay for equal work for both men and women; (e) that the health and strength of workers, men and women, and the tender age of children are not abused and that citizens are not forced by economic necessity to enter avocations unsuited to their age or strength; (f) that childhood and youth are protected against exploitation and against moral and material abandonment.";
+            break;
+          case "39A":
+            title = "Article 39A: Equal justice and legal aid";
+            description =
+              "The state shall secure that the operation of the legal system promotes justice, on a basis of equal opportunity, and shall, in particular, provide free legal aid, by suitable legislation or schemes or in any other way, to ensure that opportunities for securing justice are not denied to any citizen by reason of economic or other disabilities.";
+            break;
+          case "41":
+            title =
+              "Article 41: Right to work, education, and public assistance";
+            description =
+              "The state shall, within the limits of its economic capacity and development, make effective provision for securing the right to work, to education, and to public assistance in cases of unemployment, old age, sickness, and disablement, and in other cases of undeserved want.";
+            break;
+          case "42":
+            title =
+              "Article 42: Humane conditions of work and maternity relief";
+            description =
+              "The state shall make provision for securing just and humane conditions of work and for maternity relief.";
+            break;
+          case "43":
+            title = "Article 43: Living wage for workers";
+            description =
+              "The state shall endeavor to secure, by suitable legislation or economic organization or in any other way, to all workers, agricultural, industrial, or otherwise, work, a living wage, conditions of work ensuring a decent standard of life and full enjoyment of leisure and social and cultural opportunities and, in particular, the state shall promote cottage industries on an individual or cooperative basis in rural areas.";
+            break;
+          case "43A":
+            title = "Article 43A: Workers' participation in management";
+            description =
+              "The state shall take steps, by suitable legislation or in any other way, to secure the participation of workers in the management of undertakings, establishments, or other organizations engaged in any industry.";
+            break;
+          case "45":
+            title = "Article 45: Early childhood care and education";
+            description =
+              "The state shall endeavor to provide early childhood care and education for all children until they complete the age of six years.";
+            break;
+          case "46":
+            title =
+              "Article 46: Promotion of educational and economic interests of SCs, STs, and weaker sections";
+            description =
+              "The state shall promote with special care the educational and economic interests of the weaker sections of the people, and, in particular, of the Scheduled Castes and the Scheduled Tribes, and shall protect them from social injustice and all forms of exploitation.";
+            break;
+        }
+
+        modalTitle.innerText = title;
+        modalDescription.innerText = description;
+        modal.style.display = "block";
+      }
+      const chatWidget = document.getElementById("chat-widget");
+      const chatToggle = document.getElementById("chat-toggle");
+      const chatContainer = document.getElementById("chat-container");
+      const chatMessages = document.getElementById("chat-messages");
+      const userInput = document.getElementById("user-input");
+      const sendButton = document.getElementById("send-button");
+
+      const botResponses = {
+        hello: "Hello! How may I assist you today?",
+        help: "I'm here to help! What would you like to know?",
+        bye: "Goodbye! Feel free to chat again if you have more questions.",
+        default:
+          "I'm not sure about that. Can you please rephrase or ask something else?",
+      };
+
+      function addMessage(message, sender) {
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("message", sender);
+        messageElement.textContent = message;
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function getBotResponse(message) {
+        message = message.toLowerCase();
+        for (const key in botResponses) {
+          if (message.includes(key)) {
+            return botResponses[key];
+          }
+        }
+        return botResponses.default;
+      }
+
+      function sendMessage() {
+        const message = userInput.value.trim();
+        if (message) {
+          addMessage(message, "user");
+          userInput.value = "";
+
+          setTimeout(() => {
+            const botResponse = getBotResponse(message);
+            addMessage(botResponse, "bot");
+          }, 500);
+        }
+      }
+
+      chatToggle.addEventListener("click", () => {
+        chatContainer.classList.toggle("active");
+      });
+
+      userInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      });
+
+      sendButton.addEventListener("click", sendMessage);
+
+      // Initial bot message
+      addMessage("Hello! How can I help you today?", "bot");
+    </script>
+  </body>
+</html>
