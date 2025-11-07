@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <div id="google_translate_element">
+      <script type="text/javascript">
+        function loadGoogleTranslate() {
+          new google.translate.TranslateElement(
+            {
+              pageLanguage: "en",
+            },
+            "google_translate_element"
+          );
+        }
+      </script>
+      <script
+        type="text/javascript"
+        src="https://translate.google.com/translate_a/element.js?cb=loadGoogleTranslate"
+      ></script>
+    </div>
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      @keyframes float {
+        0%, 100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #ffffff;
+        background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #1a1a2e);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      h1 {
+        font-size: 2.8em;
+        margin-bottom: 20px;
+        text-align: center;
+        animation: fadeIn 1s ease-out;
+        text-shadow: 0 0 20px rgba(233, 103, 17, 0.5);
+        font-weight: 700;
+      }
+      .info-container {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 40px;
+        animation: slideIn 0.5s ease-out;
+        gap: 20px;
+      }
+      .score-board,
+      .leaderboard {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 25px;
+        border-radius: 20px;
+        flex: 1;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .score-board:hover,
+      .leaderboard:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(233, 103, 17, 0.3);
+      }
+      .score-board h2,
+      .leaderboard h2 {
+        font-size: 1.5em;
+        margin-top: 0;
+        text-align: center;
+        color: #00d4ff;
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+      }
+      .score-board p {
+        text-align: center;
+        font-size: 3em;
+        font-weight: bold;
+        color: #e96711;
+        text-shadow: 0 0 20px rgba(233, 103, 17, 0.7);
+        margin: 10px 0;
+      }
+      .leaderboard ol {
+        padding-left: 20px;
+        color: #ffffff;
+        text-align: left;
+      }
+      .leaderboard li {
+        margin-bottom: 10px;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        transition: background 0.3s ease;
+      }
+      .leaderboard li:hover {
+        background: rgba(233, 103, 17, 0.2);
+      }
+      .games {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 25px;
+        animation: fadeIn 1s ease-out 0.5s both;
+        margin-bottom: 20px;
+      }
+      .game-icon {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        width: 200px;
+        height: 200px;
+        transition: all 0.4s ease;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .game-icon::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(233, 103, 17, 0.2), rgba(0, 212, 255, 0.2));
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      .game-icon:hover::before {
+        opacity: 1;
+      }
+      .game-icon:hover {
+        transform: translateY(-10px) scale(1.05);
+        box-shadow: 0 15px 50px rgba(233, 103, 17, 0.4);
+        border-color: rgba(233, 103, 17, 0.5);
+      }
+      .game-icon img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        transition: transform 0.4s ease;
+        position: relative;
+        z-index: 1;
+      }
+      .game-icon:hover img {
+        transform: scale(1.15) rotate(5deg);
+        animation: float 2s ease-in-out infinite;
+      }
+      .game-icon p {
+        margin-top: 15px;
+        font-weight: 600;
+        font-size: 1.1em;
+        position: relative;
+        z-index: 1;
+      }
+      .game-icon a {
+        color: #ffffff;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+      }
+      .signout-button {
+        font-size: 18px;
+        display: block;
+        width: 200px;
+        margin: 30px auto 0;
+        padding: 15px 30px;
+        background: linear-gradient(135deg, #e96711, #ff8c42);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(233, 103, 17, 0.4);
+        border: 2px solid transparent;
+      }
+      .signout-button:hover {
+        background: linear-gradient(135deg, #ff8c42, #e96711);
+        box-shadow: 0 6px 25px rgba(233, 103, 17, 0.6);
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+      #toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+      }
+      .nav {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        display: flex;
+        padding: 15px 10px;
+        border: none;
+        font-size: 15px;
+        width: 100%;
+        justify-content: center;
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .nav div {
+        margin-top: 10px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 20px;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+        transition: background 0.3s ease;
+      }
+      .nav div:hover {
+        background: rgba(233, 103, 17, 0.2);
+      }
+      .nav div a {
+        text-decoration: none;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 500;
+        position: relative;
+        transition: color 0.3s ease;
+      }
+      .nav div a::after {
+        content: "";
+        display: block;
+        height: 3px;
+        width: 100%;
+        background: linear-gradient(90deg, #e96711, #00d4ff);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        border-radius: 2px;
+      }
+      .nav div a:hover::after {
+        transform: scaleX(1);
+      }
+      .nav div a:hover {
+        color: #00d4ff;
+      }
+      #google_translate_element {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        z-index: 1;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        margin-top: 15px;
+        margin-left: 15px;
+        margin-right: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      #google_translate_element select {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+      #google_translate_element select:hover {
+        border-color: #e96711;
+        background: rgba(255, 255, 255, 0.2);
+      }
+      #google_translate_element img {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+   <div class="nav">
+  <div><a href="/">HOME</a></div>
+  <div><a href="#article">LEARN</a></div>
+  <div><a href="/home">DASHBOARD</a></div>
+  <% if (!user) { %>
+    <div><a href="/auth/signin">LOGIN/SIGNUP</a></div>
+  <% } %>
+</div>
+
+    <div class="container">
+      <% if (user) { %>
+      <h1 style="margin: 35px">
+        <span style="color: #00d4ff; margin-bottom: 35px">Hello!</span> <%=
+        user.fullName %>
+      </h1>
+      <div class="info-container">
+        <div class="score-board">
+          <h2>Your Score</h2>
+          <p>
+            <%= user.score %>
+          </p>
+        </div>
+        <div class="leaderboard">
+          <h2>Leaderboard</h2>
+          <ol>
+            <% topPlayers.forEach((player, index) => { %>
+            <li><%= player.fullName %> - <%= player.score %> points</li>
+            <% }); %>
+          </ol>
+        </div>
+      </div>
+      <div class="games">
+        <div class="game-icon">
+          <a href="/snake-ladder">
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/chatapp-dae72.appspot.com/o/techcoders%2Fkisspng-snakes-and-ladders-ludo-neo-classic-ludo-king-d-snakes-and-ladders-5b540e2b433a19.0289314515322353072754.png895b845c-0549-46da-9ebd-fd39c6bf9edb?alt=media&token=c25355c8-28db-4aa4-a772-be596aa204e4"
+              alt="Snake Ladder"
+            />
+            <p>Snake Ladder</p>
+          </a>
+        </div>
+        <div class="game-icon">
+          <a href="/hangman">
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/chatapp-dae72.appspot.com/o/techcoders%2Fpngwing.com%20(2).png4c305bb2-be16-4b1e-9d05-23f8cda332d4?alt=media&token=2bf12c98-b914-4ef8-9472-0291f7ae5f99"
+              alt="Hangman Game"
+            />
+            <p>Hangman Game</p>
+          </a>
+        </div>
+        <div class="game-icon">
+          <a href="/quiz">
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/chatapp-dae72.appspot.com/o/techcoders%2Fpngwing.com%20(3).png23425e35-c897-4502-938a-0db9adc3bd01?alt=media&token=3b0233fd-4923-4e28-9093-9d267a329738"
+              alt="Quiz"
+            />
+            <p>Quiz</p>
+          </a>
+        </div>
+        <div class="game-icon">
+          <a href="/scenario">
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/chatapp-dae72.appspot.com/o/techcoders%2Fpngwing.com%20(4).png23d939d4-90ae-4164-b545-42aceec0e389?alt=media&token=9ed559f3-820e-40c2-b7cd-b6b264babb45"
+              alt="Scenario Based Quiz"
+            />
+            <p>Scenario Based Quiz</p>
+          </a>
+        </div>
+      </div>
+      <a href="/auth/signout" class="signout-button">Sign Out</a>
+      <% } else { %>
+      <p>User data not available.</p>
+      <% } %>
+    </div>
+    <div id="toast-container"></div>
+    <script src="/app.js"></script>
+  </body>
+</html>
