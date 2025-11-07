@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CivicsQuest</title>
+    <div id="google_translate_element">
+      <!-- Load the Google Translate script -->
+      <script type="text/javascript">
+        function loadGoogleTranslate() {
+          new google.translate.TranslateElement(
+            {
+              pageLanguage: "en",
+            },
+            "google_translate_element"
+          );
+        }
+      </script>
+      <script
+        type="text/javascript"
+        src="https://translate.google.com/translate_a/element.js?cb=loadGoogleTranslate"
+      ></script>
+    </div>
+    <style>
+      .nav {
+        background-color: transparent;
+        display: flex;
+        padding: 10px;
+        border: none;
+        font-size: 15px;
+        padding-top: 20px;
+        width: 100%;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+      }
+      .nav div {
+        margin: 20px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 8px;
+        border-radius: 30%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav div a {
+        text-decoration: none;
+        color: #333;
+        font-size: 20px;
+      }
+      .nav div ::after {
+        content: "";
+        display: block;
+        height: 4px;
+        width: 100%;
+        background-color: brown;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+      .nav div a:hover::after {
+        transform: scaleX(1);
+      }
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        position: relative;
+      }
+      .container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(to right, #ff9933, #ffffff, #138808);
+      }
+      .slide {
+        display: flex;
+        background-color: #e0f0e0;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .slide-content {
+        flex: 3;
+        padding: 0;
+        position: relative;
+        height: 60vh;
+      }
+      .slide-image {
+        height: 100%;
+      }
+      .slide-image img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+      }
+      .slide-text {
+        flex: 1;
+        background-color: #3a539b;
+        color: white;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 50vh;
+      }
+      .slide-text h2 {
+        font-size: 2em;
+        margin-top: 0;
+      }
+      .slide-text p {
+        margin-bottom: 20px;
+      }
+      .slide-text a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .slider-nav {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .slider-nav button {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: none;
+        background-color: #ccc;
+        margin: 0 5px;
+        cursor: pointer;
+      }
+      .slider-nav button.active {
+        background-color: #3a539b;
+      }
+      .prev,
+      .next {
+        position: absolute;
+        top: 45%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+      }
+
+      .prev {
+        left: 15px;
+      }
+
+      .next {
+        right: 15px;
+      }
+
+      .prev:hover,
+      .next:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      /* Articles */
+      .article {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .part {
+        display: flex;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .part-info {
+        flex: 1;
+        padding: 30px;
+      }
+      .part-number {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+      }
+      .part-title {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+      }
+      .articles {
+        flex: 2;
+        padding: 30px;
+      }
+      .articles-range {
+        font-size: 1.2em;
+        margin-bottom: 20px;
+      }
+      .article-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      .article-list li {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      .view-all {
+        display: inline-block;
+        margin-top: 20px;
+        text-decoration: none;
+        color: inherit;
+      }
+      .view-all::after {
+        content: " →";
+      }
+
+      /* Color schemes for different parts */
+      .part-1 {
+        background-color: #fce4ec;
+      }
+      .part-2 {
+        background-color: #f3e5f5;
+      }
+      .part-3 {
+        background-color: #e8eaf6;
+      }
+      .part-4 {
+        background-color: #e3f2fd;
+      }
+      .part-5 {
+        background-color: #e0f2f1;
+      }
+      .part-6 {
+        background-color: #e8f5e9;
+      }
+      .part-7 {
+        background-color: #f1f8e9;
+      }
+      .part-8 {
+        background-color: #fff3e0;
+      }
+      .part-9 {
+        background-color: #fbe9e7;
+      }
+      .part-10 {
+        background-color: #efebe9;
+      }
+
+      @import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap");
+
+      .container-article {
+        max-width: 1200px;
+        background-color: #efebe9;
+        margin: 0 auto;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .container-article::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(to right, #ff9933, #ffffff, #138808);
+      }
+      .article-heading {
+        color: #00008b;
+        font-size: 28px;
+        font-weight: 700;
+        margin-top: 0;
+        margin-bottom: 30px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .article-para {
+        font-size: 22px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        color: #333;
+        text-align: justify;
+      }
+      .read-more {
+        color: #00008b;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 700;
+        transition: color 0.3s ease;
+      }
+      .read-more:hover {
+        color: #4169e1;
+      }
+      .read-more::after {
+        content: " →";
+        transition: transform 0.3s ease;
+        display: inline-block;
+      }
+      .read-more:hover::after {
+        transform: translateX(5px);
+      }
+      .original-manuscript {
+        display: inline-block;
+        background-color: #f0f0f0;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 14px;
+        margin-top: 20px;
+        color: #333;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+      }
+      .original-manuscript:hover {
+        background-color: #e0e0e0;
+      }
+      .original-manuscript::before {
+        content: "PDF";
+        background-color: #ff9933;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 3px;
+        margin-right: 8px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .decorative-icon {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        opacity: 0.2;
+      }
+      .decorative-icon::before,
+      .decorative-icon::after {
+        content: "";
+        position: absolute;
+        background-color: #00008b;
+      }
+      .decorative-icon::before {
+        width: 100%;
+        height: 2px;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+      }
+      .decorative-icon::after {
+        width: 2px;
+        height: 100%;
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+      }
+      .ashoka-chakra {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        opacity: 0.1;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="%23000080" stroke-width="2"/><circle cx="50" cy="50" r="25" fill="none" stroke="%23000080" stroke-width="2"/><g stroke="%23000080" stroke-width="2"><path d="M50 5v90M5 50h90M14.64 14.64l70.72 70.72M85.36 14.64l-70.72 70.72"/></g></svg>');
+        background-size: contain;
+        background-repeat: no-repeat;
+      }
+
+      .container-article,
+      .part {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      /* Hover effect for all main divs */
+      .container-article:hover,
+      .part:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+      a.read-more,
+      a.view-all {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+        display: inline-block;
+        transition: all 0.3s ease;
+      }
+
+      /* Hover effect for Read More link */
+      a.read-more:hover {
+        background-color: #f8f9fa;
+        color: #0056b3;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Hover effect for View All link */
+      a.view-all:hover {
+        background-color: #e9ecef;
+        color: #004085;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .search-container {
+        max-width: 70%;
+        margin: 50px auto;
+        background: #fff;
+        border-radius: 1.625rem;
+        position: relative;
+        box-shadow: 0px 1px 5px 3px rgba(0, 0, 0, 0.12);
+      }
+
+      #searchBar {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-left: 220px;
+        padding: 20px;
+        box-shadow: 0px 1px 5px 3px rgba(0, 0, 0, 0.12);
+      }
+
+      #search-input {
+        width: 100%;
+        height: 2.8rem;
+        background: #eff1f1ef;
+        outline: none;
+        border: none;
+        border-radius: 1.625rem;
+        padding: 0 3.5rem 0 1.5rem;
+        font-size: 1rem;
+      }
+
+      #google_translate_element {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        z-index: 1;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 15px;
+        margin-left: 15px;
+        margin-right: 15px;
+      }
+
+      #google_translate_element select {
+        background-color: #fcdc94;
+        color: #4a4a4a;
+        border: 1px solid #78aba8;
+        border-radius: 4px;
+        padding: 5px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        outline: none;
+      }
+
+      #google_translate_element select:hover {
+        border-color: #ef9c66;
+      }
+
+      #google_translate_element img {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <div><a href="/">HOME</a></div>
+      <div><a href="#article">LEARN</a></div>
+      <div><a href="home">DASHBOARD</a></div>
+      <div><a href="/auth/signin">LOGIN/SIGNUP</a></div>
+    </div>
+    <div class="search-container" id="searchbar">
+      <input
+        type="text"
+        name=""
+        placeholder="Search.."
+        id="search-input"
+        onkeyup="search()"
+      />
+    </div>
+    <div class="container">
+      <div class="slider">
+        <div class="slide">
+          <div class="slide-content">
+            <div class="slide-image">
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/chatapp-dae72.appspot.com/o/techcoders%2FCons.jpeg81ded6be-c250-4ac5-8dc2-62a9cb596208?alt=media&token=fc849390-c243-4732-b52b-a990251bcb6c"
+                alt="Constitution symbols"
+              />
+            </div>
+          </div>
+          <div class="slide-text">
+            <h2>Unlock Your Rights: Explore the Constitution of India</h2>
+            <p>
+              By learning about the Constitution, you can understand your rights
+              and responsibilities as a citizen. The Constitution is like a
+              guidebook that tells you what you can do, what the government can
+              do, and how you are protected under the law. By exploring it,
+              you'll be more aware of your rights, which helps you make better
+              decisions and stand up for yourself in everyday situations..
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <div class="slide-content">
+            <div class="slide-image">
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/chatapp-dae72.appspot.com/o/techcoders%2Fpros.jpeg16ec4fb1-633a-45db-b906-c95697ddbf18?alt=media&token=274d4268-2298-40e6-a611-3920361d61e9"
+                alt="Constitution symbols"
+              />
+            </div>
+          </div>
+          <div class="slide-text">
+            <h2>The Cost of Ignorance: The Risks of Not Knowing</h2>
+            <p>
+              If you don't know your rights under the Constitution, you could
+              face serious problems. Without this knowledge, you might not
+              recognize when your rights are being violated or how to protect
+              yourself. This lack of awareness can lead to missed opportunities,
+              unfair treatment, or even legal trouble. Understanding your rights
+              is essential for making informed decisions and ensuring your
+              protection..
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <div class="slide-content">
+            <div class="slide-image">
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/chatapp-dae72.appspot.com/o/techcoders%2FConstitution.jpeg9b4049ac-2b7d-4bde-b518-75faa9ad0e08?alt=media&token=e7afac4d-d2c2-4572-a0dd-80334ab0d58d"
+                alt="Constitution symbols"
+              />
+            </div>
+          </div>
+          <div class="slide-text">
+            <h2>What is Indian Constitution</h2>
+            <p>
+              The supreme law of India that outlines how the country is
+              governed. It sets the rules for how the government operates,
+              defines the rights and duties of citizens, and ensures justice,
+              equality, and freedom for everyone. The Constitution is like a
+              blueprint that guides how laws are made and how the country should
+              function, making it essential for every citizen to understand it..
+            </p>
+          </div>
+        </div>
+      </div>
+      <button class="prev">
+        <img
+          src="https://firebasestorage.googleapis.com/v0/b/chatapp-dae72.appspot.com/o/techcoders%2Fchevron-left-outline.616x1024.png175666f4-36ab-471b-a5b5-c3fb9a0ed9c4?alt=media&token=4bb599c9-9469-4035-8833-4ae6edd87101"
+          alt=""
+          height="20px"
+          width="15px"
+        />
+      </button>
+      <button class="next">
+        <img
+          src="https://firebasestorage.googleapis.com/v0/b/chatapp-dae72.appspot.com/o/techcoders%2Fchevron-right-outline.615x1024.png40b66014-70cb-42e0-95ab-efc2c09e98e2?alt=media&token=46015302-dd44-4163-96cd-ea0efd438cf0"
+          alt=""
+          height="20px"
+          width="15px"
+        />
+      </button>
+    </div>
+    <div class="container-article">
+      <h1 class="article-heading">The Constitution of India</h1>
+      <p class="article-para">
+        WE, THE PEOPLE OF INDIA, having solemnly resolved to constitute India
+        into a SOVEREIGN SOCIALIST SECULAR DEMOCRATIC REPUBLIC and to secure to
+        all its citizens...
+      </p>
+      <a
+        href="https://legislative.gov.in/constitution-of-india/"
+        class="read-more"
+        >Read full Preamble</a
+      >
+      <br />
+      <span class="original-manuscript">Original Manuscript</span>
+      <div class="decorative-icon"></div>
+      <div class="ashoka-chakra"></div>
+    </div>
+
+    <!-- Parts Section -->
+    <div class="articles" id="article">
+      <div class="part part-1">
+        <div class="part-info">
+          <div class="part-number">PART III</div>
+          <h2 class="part-title">Definition and Legal Framework</h2>
+        </div>
+        <div class="articles">
+          <div class="articles-range">ARTICLES 12 TO 13</div>
+          <ul class="article-list">
+            <li class="product" id="id1">Article 12: Definition of "State"</li>
+            <li class="product" id="id2">
+              Article 13: Laws inconsistent with Fundamental Rights
+            </li>
+          </ul>
+          <a href="/article13" class="view-all">VIEW ALL</a>
+        </div>
+      </div>
+
+      <div class="part part-2">
+        <div class="part-info">
+          <div class="part-number">PART III</div>
+          <h2 class="part-title">Right to Equality</h2>
+        </div>
+        <div class="articles">
+          <div class="articles-range">ARTICLES 14 TO 18</div>
+          <ul class="article-list">
+            <li>Article 14: Equality before the law</li>
+            <li>Article 15: Prohibition of discrimination</li>
+            <li>Article 16: Equality of opportunity in public employment</li>
+            <li>Article 17: Abolition of untouchability</li>
+            <li>Article 18: Abolition of titles</li>
+          </ul>
+          <a href="/article14-18" class="view-all">VIEW ALL</a>
+        </div>
+      </div>
+
+      <div class="part part-3">
+        <div class="part-info">
+          <div class="part-number">PART III</div>
+          <h2 class="part-title">Right to Freedom</h2>
+        </div>
+        <div class="articles">
+          <div class="articles-range">ARTICLES 19 TO 22</div>
+          <ul class="article-list">
+            <li>
+              Article 19: Freedom of speech, assembly, association, movement,
+              residence, and profession
+            </li>
+            <li>
+              Article 20: Protection in respect of conviction for offenses
+            </li>
+            <li>Article 21: Protection of life and personal liberty</li>
+            <li>Article 21A: Right to education</li>
+            <li>Article 22: Protection against arrest and detention</li>
+          </ul>
+          <a href="/article19-22" class="view-all">VIEW ALL</a>
+        </div>
+      </div>
+
+      <div class="part part-4">
+        <div class="part-info">
+          <div class="part-number">PART III</div>
+          <h2 class="part-title">
+            Protection Against Exploitation and Freedom of Religion
+          </h2>
+        </div>
+        <div class="articles">
+          <div class="articles-range">ARTICLES 23 TO 28</div>
+          <ul class="article-list">
+            <li>
+              Article 23: Prohibition of human trafficking and forced labor
+            </li>
+            <li>Article 24: Prohibition of child labor</li>
+            <li>Article 25: Freedom of religion</li>
+            <li>Article 26: Freedom to manage religious affairs</li>
+            <li>
+              Article 27: Freedom from taxation for promotion of any religion
+            </li>
+            <li>
+              Article 28: Freedom from religious instruction in state-funded
+              institutions
+            </li>
+          </ul>
+          <a href="/article25-28" class="view-all">VIEW ALL</a>
+        </div>
+      </div>
+
+      <div class="part part-5">
+        <div class="part-info">
+          <div class="part-number">PART III</div>
+          <h2 class="part-title">Cultural and Educational Rights</h2>
+        </div>
+        <div class="articles">
+          <div class="articles-range">ARTICLES 29 TO 30</div>
+          <ul class="article-list">
+            <li class="product">
+              Article 29: Protection of interests of minorities
+            </li>
+            <li class="product">
+              Article 30: Right of minorities to establish and administer
+              educational institutions
+            </li>
+          </ul>
+          <a href="/article29-30" class="view-all">VIEW ALL</a>
+        </div>
+      </div>
+
+      <div class="part part-6">
+        <div class="part-info">
+          <div class="part-number">PART III</div>
+          <h2 class="part-title">Right to Constitutional Remedies</h2>
+        </div>
+        <div class="articles">
+          <div class="articles-range">ARTICLES 32 TO 35</div>
+          <ul class="article-list">
+            <li class="product">
+              Article 32: Right to approach the Supreme Court for enforcement of
+              Fundamental Rights
+            </li>
+          </ul>
+          <a href="/article32-35" class="view-all">VIEW ALL</a>
+        </div>
+      </div>
+
+      <div class="part part-7">
+        <div class="part-info">
+          <div class="part-number">PART IV</div>
+          <h2 class="part-title">Social Welfare and Justice</h2>
+        </div>
+        <div class="articles">
+          <div class="articles-range">ARTICLES 38 TO 46</div>
+          <ul class="article-list">
+            <li>Article 38: Welfare of the people through social justice</li>
+            <li>
+              Article 39: Equal rights to livelihood, resource distribution,
+              child protection
+            </li>
+            <li class="product">Article 39A: Equal justice and legal aid</li>
+            <li class="product">
+              Article 41: Right to work, education, and public assistance
+            </li>
+            <li class="product">
+              Article 42: Humane conditions of work and maternity relief
+            </li>
+            <li class="product">Article 43: Living wage for workers</li>
+            <li class="product">
+              Article 43A: Workers' participation in management
+            </li>
+            <li class="product">
+              Article 45: Early childhood care and education
+            </li>
+            <li class="product">
+              Article 46: Promotion of educational and economic interests of
+              SCs, STs, and weaker sections
+            </li>
+          </ul>
+          <a href="/article38-46" class="view-all">VIEW ALL</a>
+        </div>
+      </div>
+
+      <div class="part part-8">
+        <div class="part-info">
+          <div class="part-number">PART IV</div>
+          <h2 class="part-title">Governance and Administrative Principles</h2>
+        </div>
+        <div class="articles">
+          <div class="articles-range">ARTICLES 36 TO 50</div>
+          <ul class="article-list">
+            <li class="product">Article 36: Definition of "State"</li>
+            <li class="product">Article 37: Application of the principles</li>
+            <li class="product">
+              Article 40: Organization of village panchayats
+            </li>
+            <li class="product">Article 44: Uniform civil code</li>
+            <li class="product">
+              Article 50: Separation of judiciary from executive
+            </li>
+          </ul>
+          <a href="/article36-50" class="view-all">VIEW ALL</a>
+        </div>
+      </div>
+
+      <div class="part part-9">
+        <div class="part-info">
+          <div class="part-number">PART IV</div>
+          <h2 class="part-title">Environmental and Cultural Protection</h2>
+        </div>
+        <div class="articles">
+          <div class="articles-range">ARTICLES 47 TO 51</div>
+          <ul class="article-list">
+            <li class="product">
+              Article 47: Improvement of public health and nutrition
+            </li>
+            <li class="product">
+              Article 48: Organization of agriculture and animal husbandry
+            </li>
+            <li class="product">Article 48A: Environmental protection</li>
+            <li class="product">Article 49: Protection of monuments</li>
+            <li class="product">
+              Article 51: Promotion of international peace
+            </li>
+          </ul>
+          <a href="/article47-51" class="view-all">VIEW ALL</a>
+        </div>
+      </div>
+
+      <div class="part part-10">
+        <div class="part-info">
+          <div class="part-number">PART IV A</div>
+          <h2 class="part-title">Fundamental Duties</h2>
+        </div>
+        <div class="articles">
+          <div class="articles-range">ARTICLE 51A</div>
+          <ul class="article-list">
+            <li class="product">
+              Article 51A: Duties of citizens, including respecting the
+              Constitution, promoting harmony, protecting the environment, and
+              providing education
+            </li>
+          </ul>
+          <a href="/article51A" class="view-all">VIEW ALL</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const slides = document.querySelectorAll(".slide");
+      const nextButton = document.querySelector(".next");
+      const prevButton = document.querySelector(".prev");
+      let currentSlide = 0;
+
+      const search = () => {
+        const searchbox = document
+          .getElementById("search-input")
+          .value.toUpperCase();
+        const storeitems = document.getElementById("container");
+        const product = document.querySelectorAll(".product");
+        const pname = storeitems.getElementsByTagName("a");
+
+        for (var i = 0; i < pname.length; i++) {
+          let match = product[i].getElementsByTagName("a")[0];
+
+          if (match) {
+            let textvalue = match.textContent || match.innerHTML;
+
+            if (textvalue.toUpperCase().indexOf(searchbox) > -1) {
+              product[i].style.display = "";
+            } else {
+              product[i].style.display = "none";
+            }
+          }
+        }
+      };
+
+      function showSlide(index) {
+        // Hide all slides
+        slides.forEach((slide) => {
+          slide.style.display = "none";
+        });
+
+        // Show the selected slide
+        slides[index].style.display = "flex";
+      }
+
+      function nextSlide() {
+        currentSlide++;
+        if (currentSlide >= slides.length) {
+          currentSlide = 0;
+        }
+        showSlide(currentSlide);
+      }
+
+      function prevSlide() {
+        currentSlide--;
+        if (currentSlide < 0) {
+          currentSlide = slides.length - 1;
+        }
+        showSlide(currentSlide);
+      }
+
+      // Initialize the slider by showing the first slide
+      showSlide(currentSlide);
+
+      // Add event listeners for the buttons
+      nextButton.addEventListener("click", nextSlide);
+      prevButton.addEventListener("click", prevSlide);
+
+      // Optional: Automatically move to the next slide every 3 seconds
+      setInterval(nextSlide, 5000);
+    </script>
+  </body>
+</html>
