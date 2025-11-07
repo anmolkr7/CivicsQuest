@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake and Ladder-CivicsQuest</title>
+    <!-- <link rel="stylesheet" href="./styles/SnakeAndLadder.css"> -->
+  </head>
+  <style>
+    body {
+      background: url("https://firebasestorage.googleapis.com/v0/b/chatapp-dae72.appspot.com/o/techcoders%2Fphoto-1642056446459-1f10774273f2.jpegbccad49c-d59e-435d-8a3e-0d67b2da1e6f?alt=media&token=92d1dfb7-1062-4f10-9b98-d3c3eb83dfe7")
+        no-repeat center center;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      margin: 20px auto;
+      max-width: 700px; /* Adjusted for a wider board */
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr); /* 10 columns for 50 squares */
+      grid-template-rows: repeat(5, 1fr); /* 5 rows for 50 squares */
+      gap: 0; /* Remove gap for a continuous board look */
+      position: relative;
+      width: 600px; /* Adjusted for a wider board */
+      height: 300px; /* Adjusted height for the 10x5 grid */
+      border: 5px solid #333; /* Add border to the board */
+      background-image: url("your-background-image-url"); /* Optionally add a background image */
+      background-size: cover;
+      background-position: center;
+      margin: 0 auto;
+    }
+
+    .square {
+      width: 60px; /* Adjusted size for a 10x5 grid */
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      color: #fff; /* Text color white for better contrast */
+      position: relative;
+    }
+
+    .square:nth-child(odd) {
+      background-color: #76c7c0; /* Light teal color */
+    }
+
+    .square:nth-child(even) {
+      background-color: #4b9b8e; /* Darker teal color */
+    }
+
+    /* Style the player token */
+    .token {
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      border-radius: 50%;
+      position: absolute;
+      transition: all 0.5s ease;
+      z-index: 1000;
+      border: 2px solid #fff; /* White border to make the token stand out */
+    }
+
+    .controls {
+      margin-top: 20px;
+    }
+
+    .controls button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #4b9b8e;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .controls button:hover {
+      background-color: #76c7c0;
+    }
+
+    .controls p {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .question-popup {
+      display: none;
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .question-popup.active {
+      display: block;
+    }
+
+    #questionPopup h2 {
+      color: #4b9b8e;
+    }
+
+    #questionPopup button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #4b9b8e;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    #questionPopup button:hover {
+      background-color: #76c7c0;
+    }
+
+    #scoreDisplay {
+      font-size: 24px;
+      color: #4b9b8e;
+      margin-top: 20px;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <div>
+        <h1>Snake and Ladder - Nagrik Aur Samvidhan</h1>
+        <div class="board">
+          <!-- 100 squares for the snake and ladder board -->
+          <!-- <div class="square" id="square-100">100</div>
+            <div class="square" id="square-99">99</div>
+            <div class="square" id="square-98">98</div>
+            <div class="square" id="square-97">97</div>
+            <div class="square" id="square-95">96</div>
+            <div class="square" id="square-95">95</div>
+            <div class="square" id="square-94">94</div>
+            <div class="square" id="square-93">93</div>
+            <div class="square" id="square-92">92</div>
+            <div class="square" id="square-91">91</div>
+            <div class="square" id="square-90">90</div>
+            <div class="square" id="square-89">89</div>
+            <div class="square" id="square-88">88</div>
+            <div class="square" id="square-87">87</div>
+            <div class="square" id="square-86">86</div>
+            <div class="square" id="square-85">85</div>
+            <div class="square" id="square-84">84</div>
+            <div class="square" id="square-83">83</div>
+            <div class="square" id="square-82">82</div>
+            <div class="square" id="square-81">81</div>
+            <div class="square" id="square-80">80</div>
+            <div class="square" id="square-79">79</div>
+            <div class="square" id="square-78">78</div>
+            <div class="square" id="square-77">77</div>
+            <div class="square" id="square-76">76</div>
+            <div class="square" id="square-75">75</div>
+            <div class="square" id="square-74">74</div>
+            <div class="square" id="square-73">73</div>
+            <div class="square" id="square-72">72</div>
+            <div class="square" id="square-71">71</div>
+            <div class="square" id="square-70">70</div>
+            <div class="square" id="square-69">69</div>
+            <div class="square" id="square-68">68</div>
+            <div class="square" id="square-67">67</div>
+            <div class="square" id="square-66">66</div>
+            <div class="square" id="square-65">65</div>
+            <div class="square" id="square-64">64</div>
+            <div class="square" id="square-63">63</div>
+            <div class="square" id="square-62">62</div>
+            <div class="square" id="square-61">61</div>
+            <div class="square" id="square-60">60</div>
+            <div class="square" id="square-59">59</div>
+            <div class="square" id="square-58">58</div>
+            <div class="square" id="square-57">57</div>
+            <div class="square" id="square-56">56</div>
+            <div class="square" id="square-55">55</div>
+            <div class="square" id="square-54">54</div>
+            <div class="square" id="square-53">53</div>
+            <div class="square" id="square-52">52</div>
+            <div class="square" id="square-51">51</div> -->
+          <div class="square" id="square-50">50</div>
+          <div class="square" id="square-49">49</div>
+          <div class="square" id="square-48">48</div>
+          <div class="square" id="square-47">47</div>
+          <div class="square" id="square-46">46</div>
+          <div class="square" id="square-45">45</div>
+          <div class="square" id="square-44">44</div>
+          <div class="square" id="square-43">43</div>
+          <div class="square" id="square-42">42</div>
+          <div class="square" id="square-41">41</div>
+          <div class="square" id="square-40">40</div>
+          <div class="square" id="square-39">39</div>
+          <div class="square" id="square-38">38</div>
+          <div class="square" id="square-37">37</div>
+          <div class="square" id="square-36">36</div>
+          <div class="square" id="square-35">35</div>
+          <div class="square" id="square-34">34</div>
+          <div class="square" id="square-33">33</div>
+          <div class="square" id="square-32">32</div>
+          <div class="square" id="square-31">31</div>
+          <div class="square" id="square-30">30</div>
+          <div class="square" id="square-29">29</div>
+          <div class="square" id="square-28">28</div>
+          <div class="square" id="square-27">27</div>
+          <div class="square" id="square-26">26</div>
+          <div class="square" id="square-25">25</div>
+          <div class="square" id="square-24">24</div>
+          <div class="square" id="square-23">23</div>
+          <div class="square" id="square-22">22</div>
+          <div class="square" id="square-21">21</div>
+          <div class="square" id="square-20">20</div>
+          <div class="square" id="square-19">19</div>
+          <div class="square" id="square-18">18</div>
+          <div class="square" id="square-17">17</div>
+          <div class="square" id="square-16">16</div>
+          <div class="square" id="square-15">15</div>
+          <div class="square" id="square-14">14</div>
+          <div class="square" id="square-13">13</div>
+          <div class="square" id="square-12">12</div>
+          <div class="square" id="square-11">11</div>
+          <div class="square" id="square-10">10</div>
+          <div class="square" id="square-9">9</div>
+          <div class="square" id="square-8">8</div>
+          <div class="square" id="square-7">7</div>
+          <div class="square" id="square-6">6</div>
+          <div class="square" id="square-5">5</div>
+          <div class="square" id="square-4">4</div>
+          <div class="square" id="square-3">3</div>
+          <div class="square" id="square-2">2</div>
+          <div class="square" id="square-1">1</div>
+          <div id="playerToken" class="token"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="controls">
+          <button id="rollDice">Roll Dice</button>
+          <p>Dice: <span id="diceResult">0</span></p>
+          <p>Player Position: <span id="playerPosition">1</span></p>
+          <p id="scoreDisplay"></p>
+        </div>
+        <div class="question-popup" id="questionPopup">
+          <h2>Constitutional Question</h2>
+          <p id="question"></p>
+          <button id="answerCorrect">Correct</button>
+          <button id="answerIncorrect">Incorrect</button>
+          <p id="answer"></p>
+          <button id="rollDiceAgain">Roll Dice</button>
+        </div>
+      </div>
+    </div>
+    <!-- <script src="./script/SnakeAndLadder.js"></script> -->
+  </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const board = document.querySelector(".board");
+      const rollDiceBtn = document.getElementById("rollDice");
+      const diceResult = document.getElementById("diceResult");
+      const playerPosition = document.getElementById("playerPosition");
+      const questionPopup = document.getElementById("questionPopup");
+      const questionText = document.getElementById("question");
+      const correctBtn = document.getElementById("answerCorrect");
+      const incorrectBtn = document.getElementById("answerIncorrect");
+      const ans = document.getElementById("answer");
+      const rollDiceAgainBtn = document.getElementById("rollDiceAgain");
+      const playerToken = document.getElementById("playerToken");
+      const scoreDisplay = document.getElementById("scoreDisplay");
+
+      let currentPos = 1;
+      let attempts = 0;
+      let gameCompleted = false;
+
+      // ... (keep the existing questions array)
+      const questions = [
+        // Preamble
+        {
+          question:
+            "What does the Preamble of the Constitution declare India as?",
+          answer: "Correct",
+        }, // Sovereign, Socialist, Secular, Democratic Republic
+        {
+          question:
+            "Does the Preamble mention 'Justice' as one of its objectives?",
+          answer: "Correct",
+        },
+        {
+          question: "Is 'Liberty' mentioned in the Preamble?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Does the Preamble refer to 'Equality of status and opportunity'?",
+          answer: "Correct",
+        },
+        {
+          question: "Is 'Fraternity' mentioned in the Preamble?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Was the word 'Secular' in the original Preamble of the Constitution?",
+          answer: "Incorrect",
+        }, // Added by the 42nd Amendment
+        {
+          question: "Does the Preamble mention 'Union of States'?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is 'Unity and integrity of the Nation' a goal in the Preamble?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Does the Preamble state that the Constitution was adopted by 'We, the People of India'?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is 'Justice - Social, Economic, and Political' one of the objectives of the Preamble?",
+          answer: "Correct",
+        },
+
+        // Fundamental Rights - Right to Equality
+        {
+          question: "Is 'Equality before law' a Fundamental Right?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Does the Constitution prohibit discrimination on the grounds of religion?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Can the State make any law that denies equality before the law?",
+          answer: "Incorrect",
+        },
+        {
+          question: "Is 'Abolition of Untouchability' a Fundamental Right?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Are titles such as 'Sir' allowed under the Indian Constitution?",
+          answer: "Incorrect",
+        }, // Titles are abolished
+        {
+          question:
+            "Can the State make special provisions for women and children?",
+          answer: "Correct",
+        },
+        {
+          question: "Does the Constitution allow discrimination based on race?",
+          answer: "Incorrect",
+        },
+        {
+          question:
+            "Is 'Equality of opportunity in matters of public employment' a Fundamental Right?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is 'Untouchability' mentioned in Article 17 of the Constitution?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Can the State provide reservation in public employment for backward classes?",
+          answer: "Correct",
+        },
+
+        // Fundamental Rights - Right to Freedom
+        {
+          question:
+            "Is 'Freedom of Speech and Expression' a Fundamental Right?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Can freedom of speech be restricted in the interest of the sovereignty of India?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is the right to form associations or unions guaranteed by the Constitution?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Can the State impose restrictions on freedom of assembly for public order?",
+          answer: "Correct",
+        },
+        {
+          question: "Is 'Right to Education' a Fundamental Right?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is the right to practice any profession, or to carry on any occupation, trade, or business a Fundamental Right?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Can the State restrict the movement of people in certain areas?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is the right to reside and settle in any part of India a Fundamental Right?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is 'Freedom of the Press' explicitly mentioned as a Fundamental Right?",
+          answer: "Incorrect",
+        }, // It is implied under Freedom of Speech
+        {
+          question:
+            "Does the Constitution protect against double jeopardy (being tried twice for the same offence)?",
+          answer: "Correct",
+        },
+
+        // Fundamental Rights - Right against Exploitation
+        {
+          question:
+            "Is 'Prohibition of Human Trafficking' a Fundamental Right?",
+          answer: "Correct",
+        },
+        {
+          question: "Can children under the age of 14 work in factories?",
+          answer: "Incorrect",
+        }, // Prohibited
+        {
+          question: "Is forced labor (begar) allowed under the Constitution?",
+          answer: "Incorrect",
+        },
+        {
+          question:
+            "Does the Constitution allow the State to impose compulsory service for public purposes?",
+          answer: "Correct",
+        },
+        {
+          question: "Is it a crime to employ children in hazardous industries?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Can forced labor be justified under any circumstances in India?",
+          answer: "Incorrect",
+        },
+
+        // Fundamental Rights - Right to Freedom of Religion
+        {
+          question: "Is 'Freedom of Conscience' a Fundamental Right?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Can the State regulate religious practices for social welfare?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is 'Right to Manage Religious Affairs' a Fundamental Right?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Can religious institutions receive government funding for religious promotion?",
+          answer: "Incorrect",
+        }, // They cannot be funded for religious promotion
+        {
+          question:
+            "Can a person be forced to pay taxes for the promotion of any particular religion?",
+          answer: "Incorrect",
+        },
+        {
+          question:
+            "Does the Constitution allow religious instruction in State-funded schools?",
+          answer: "Incorrect",
+        },
+        {
+          question:
+            "Is the wearing of kirpans by Sikhs protected under the Constitution?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Can the State make laws for social reform that affect religious practices?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Does the Constitution allow religious worship in State-maintained institutions?",
+          answer: "Incorrect",
+        },
+
+        // Fundamental Rights - Cultural and Educational Rights
+        {
+          question:
+            "Can minorities establish and administer their own educational institutions?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Does the Constitution protect the right of any section of citizens to conserve their culture?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Can a minority's right to administer educational institutions be restricted?",
+          answer: "Incorrect",
+        },
+        {
+          question:
+            "Is 'Protection of Interests of Minorities' a Fundamental Right?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Does the Constitution allow the State to discriminate against minority institutions?",
+          answer: "Incorrect",
+        },
+        {
+          question:
+            "Can the State compulsorily acquire property of minority educational institutions?",
+          answer: "Correct",
+        }, // With fair compensation
+        {
+          question:
+            "Is the right to admission in educational institutions a Fundamental Right?",
+          answer: "Correct",
+        },
+
+        // Fundamental Rights - Right to Constitutional Remedies
+        {
+          question:
+            "Can citizens approach the Supreme Court if their Fundamental Rights are violated?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Does the Supreme Court have the power to issue writs for the enforcement of Fundamental Rights?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Can the right to move the Supreme Court for enforcement of Fundamental Rights be suspended?",
+          answer: "Correct",
+        }, // Only during a state of emergency
+        {
+          question:
+            "Is 'Right to Constitutional Remedies' considered the heart and soul of the Constitution?",
+          answer: "Correct",
+        }, // Dr. B.R. Ambedkar's view
+        {
+          question:
+            "Can Parliament empower lower courts to issue writs for enforcement of Fundamental Rights?",
+          answer: "Correct",
+        },
+
+        // Directive Principles of State Policy
+        {
+          question:
+            "Are the Directive Principles of State Policy enforceable by any court?",
+          answer: "Incorrect",
+        },
+        {
+          question:
+            "Is 'Right to Work' mentioned in the Directive Principles of State Policy?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Do the Directive Principles promote equal pay for equal work?",
+          answer: "Correct",
+        },
+        {
+          question: "Does the State have a duty to promote village panchayats?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is free legal aid a part of the Directive Principles of State Policy?",
+          answer: "Correct",
+        },
+        {
+          question: "Can the Directive Principles override Fundamental Rights?",
+          answer: "Incorrect",
+        },
+        {
+          question:
+            "Is the protection of the environment mentioned in the Directive Principles?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Does the Directive Principles advocate for the separation of judiciary from the executive?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is 'Uniform Civil Code' a Directive Principle of State Policy?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Do the Directive Principles aim to raise the level of nutrition and public health?",
+          answer: "Correct",
+        },
+
+        // Fundamental Duties
+        {
+          question:
+            "Is it a duty of every citizen to uphold and protect the sovereignty of India?",
+          answer: "Correct",
+        },
+        {
+          question: "Is defending the country a Fundamental Duty of citizens?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Are citizens required to respect the National Flag and National Anthem?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is promoting harmony and the spirit of brotherhood a Fundamental Duty?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Does the Constitution mandate citizens to preserve the rich heritage of India's culture?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Is it a Fundamental Duty to develop scientific temper and humanism?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Are citizens required to safeguard public property and abjure violence?",
+          answer: "Correct",
+        },
+        {
+          question: "Is providing education to children a Fundamental Duty?",
+          answer: "Correct",
+        },
+        {
+          question:
+            "Does the Constitution require citizens to protect the natural environment?",
+          answer: "Correct",
+        },
+      ];
+
+      function movePlayer(position) {
+        // ... (keep the existing movePlayer function)
+        const square = document.getElementById(`square-${position}`);
+        const rect = square.getBoundingClientRect();
+        const boardRect = board.getBoundingClientRect();
+
+        // Calculate the offset of the square within the board
+        const offsetX =
+          rect.left -
+          boardRect.left +
+          rect.width / 2 -
+          playerToken.offsetWidth / 2;
+        const offsetY =
+          rect.top -
+          boardRect.top +
+          rect.height / 2 -
+          playerToken.offsetHeight / 2;
+
+        // Move the token to the calculated position
+        playerToken.style.left = `${offsetX}px`;
+        playerToken.style.top = `${offsetY}px`;
+      }
+
+      function calculateScore() {
+        // Higher score for fewer attempts
+        return Math.max(1000 - attempts * 10, 0);
+      }
+
+      function handleAnswer(isCorrect, roll) {
+        attempts++;
+        gameCompleted = false;
+        if (isCorrect) {
+          currentPos += roll;
+          if (currentPos >= 50) {
+            currentPos = 50;
+            gameCompleted = true;
+          }
+          playerPosition.textContent = currentPos;
+          ans.textContent = "Correct Answer🥳";
+        } else {
+          currentPos -= roll;
+          if (currentPos < 1) currentPos = 1;
+          playerPosition.textContent = currentPos;
+          ans.textContent = "Wrong Answer😓";
+        }
+        correctBtn.disabled = true;
+        incorrectBtn.disabled = true;
+        movePlayer(currentPos);
+
+        if (gameCompleted) {
+          const finalScore = calculateScore();
+          sendScoreToServer(finalScore);
+          scoreDisplay.textContent = `Game Completed! Final Score: ${finalScore}`;
+          rollDiceBtn.disabled = true;
+          rollDiceAgainBtn.disabled = true;
+          alert("YOU WON 🥳🥳🥳");
+        } else {
+          scoreDisplay.textContent = `Current Score: ${calculateScore()}`;
+        }
+      }
+
+      function rollDiceAndAskQuestion() {
+        ans.textContent = "";
+        let roll = Math.floor(Math.random() * 6) + 1;
+        diceResult.textContent = roll;
+        correctBtn.disabled = false;
+        incorrectBtn.disabled = false;
+        questionPopup.classList.add("active");
+        const randomQuestion =
+          questions[Math.floor(Math.random() * questions.length)];
+        questionText.textContent = randomQuestion.question;
+
+        correctBtn.onclick = () =>
+          handleAnswer(randomQuestion.answer === "Correct", roll);
+        incorrectBtn.onclick = () =>
+          handleAnswer(randomQuestion.answer === "Incorrect", roll);
+      }
+      function sendScoreToServer(score) {
+        fetch("/update-score", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ score: score }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Score saved successfully:", data);
+          })
+          .catch((error) => {
+            console.error("Error saving score:", error);
+          });
+      }
+
+      rollDiceBtn.addEventListener("click", rollDiceAndAskQuestion);
+      rollDiceAgainBtn.addEventListener("click", rollDiceAndAskQuestion);
+
+      // Initialize score display
+      scoreDisplay.textContent = "Current Score: 1000";
+    });
+  </script>
+</html>
