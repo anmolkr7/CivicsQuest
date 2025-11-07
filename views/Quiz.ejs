@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Constitution Quiz</title>
+  </head>
+  <div id="google_translate_element"></div>
+
+  <!-- Load the Google Translate script -->
+  <script type="text/javascript">
+    function loadGoogleTranslate() {
+      new google.translate.TranslateElement(
+        {
+          pageLanguage: "en",
+        },
+        "google_translate_element"
+      );
+    }
+  </script>
+  <script
+    type="text/javascript"
+    src="https://translate.google.com/translate_a/element.js?cb=loadGoogleTranslate"
+  ></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap");
+
+    body {
+      font-family: "Merriweather", serif;
+      background: url("https://firebasestorage.googleapis.com/v0/b/chatapp-dae72.appspot.com/o/techcoders%2Fseamless-pattern-of-vector-office-supplies-collection-of-stationery-in-doodle-style-endless-background-R0BDG2.jpg0ac4184b-eca7-4a50-b195-4cc777729342?alt=media&token=34dc94a8-1f04-43a1-870b-4c38402a2997")
+        no-repeat center center fixed;
+      background-size: cover;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 800px;
+      background-color: rgba(148, 180, 194, 0.99);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      color: #f6f1f1;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    #quiz-container {
+      margin-bottom: 30px;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      min-width: 700px;
+    }
+
+    .question {
+      position: absolute;
+      width: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .question.active {
+      opacity: 1;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    button {
+      display: inline-block;
+      background-color: #156b93;
+      color: #fff;
+      padding: 10px;
+      margin: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.5em;
+      cursor: pointer;
+      box-shadow: 0 5px #0d3240;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      width: 150px;
+    }
+
+    button:hover {
+      background-color: #5e848d;
+      box-shadow: 0 3px #4d7874;
+      transform: translateY(-3px);
+    }
+
+    button:active {
+      box-shadow: 0 2px #4d7874;
+      transform: translateY(-1px);
+    }
+
+    label {
+      display: block;
+      margin: 10px 0;
+      cursor: pointer;
+      text-align: left;
+      color: #ffffff;
+    }
+
+    p {
+      display: block;
+      margin: 10px 0;
+      cursor: pointer;
+      text-align: left;
+      color: #ffffff;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 1.8em;
+      color: #a5b554;
+      display: none;
+      animation: fadeIn 1s ease;
+    }
+
+    #google_translate_element {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background-color: rgba(148, 180, 194, 0.96);
+      padding: 5px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #google_translate_element select {
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
+      background-color: #156b93;
+      color: #fff;
+      font-size: 14px;
+      font-family: "Merriweather", serif;
+      cursor: pointer;
+    }
+
+    #google_translate_element select option {
+      color: #333;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
+  <body>
+    <div class="container">
+      <h1>Constitution Quiz</h1>
+      <div id="quiz-container">
+        <!-- Questions will be dynamically inserted here -->
+      </div>
+      <button id="next-button" onclick="nextQuestion()">Next</button>
+      <div id="result"></div>
+    </div>
+  </body>
+  <script>
+    const questions = [
+      {
+        question:
+          'What is included in the definition of "the State" as per the Constitution?',
+        options: [
+          "a) Only the Government of India",
+          "b) The Government and Parliament of India, the Government and Legislature of each State, and all local or other authorities within the territory of India or under the control of the Government of India",
+          "c) Only the Parliament of India",
+          "d) Only the local authorities",
+        ],
+        correctAnswer: "b",
+      },
+      {
+        question:
+          "According to Article 13, what happens to laws that are inconsistent with the provisions of the Constitution?",
+        options: [
+          "a) They remain in force",
+          "b) They are void to the extent of their inconsistency",
+          "c) They are automatically amended",
+          "d) They are subject to review by the Supreme Court",
+        ],
+        correctAnswer: "b",
+      },
+      {
+        question: "Article 14 guarantees which of the following rights?",
+        options: [
+          "a) Right to equality before the law and equal protection of the laws",
+          "b) Right to freedom of speech",
+          "c) Right to religious freedom",
+          "d) Right to form associations",
+        ],
+        correctAnswer: "a",
+      },
+      {
+        question:
+          "Under Article 15, the State is prohibited from discriminating against any citizen on the grounds of which of the following?",
+        options: [
+          "a) Education level",
+          "b) Religion, race, caste, sex, place of birth",
+          "c) Economic status",
+          "d) Physical appearance",
+        ],
+        correctAnswer: "b",
+      },
+      {
+        question:
+          "Which article in the Constitution deals with the abolition of 'Untouchability'?",
+        options: [
+          "a)  Article 17",
+          "b) Article 19",
+          "c) Article 21",
+          "d) Article 24",
+        ],
+        correctAnswer: "a",
+      },
+      {
+        question:
+          "According to Article 19, which of the following is NOT a right conferred to citizens?",
+        options: [
+          "a) Right to freedom of speech and expression",
+          "b) Right to assemble peacefully and without arms",
+          "c) Right to bear arms",
+          "d) Right to move freely throughout the territory of India",
+        ],
+        correctAnswer: "c",
+      },
+      {
+        question:
+          "What is the minimum age below which a child cannot be employed in any factory or mine as per Article 24?",
+        options: ["a) 10 years", "b) 12 years", "c) 14 years", "d) 16 years"],
+        correctAnswer: "c",
+      },
+      {
+        question:
+          "Article 25 provides all persons with the freedom to do what?",
+        options: [
+          "a) Profess, practice, and propagate religion",
+          "b) Form political parties",
+          "c) Own property",
+          "d) Vote in elections",
+        ],
+        correctAnswer: "a",
+      },
+      {
+        question:
+          "Which of the following articles states that no religious instruction shall be provided in any educational institution wholly maintained out of State funds?",
+        options: [
+          "a) Article 25",
+          "b) Article 26",
+          "c) Article 27",
+          "d) Article 28",
+        ],
+        correctAnswer: "d",
+      },
+      {
+        question: "What does Article 30 guarantee to minorities?",
+        options: [
+          "a) Right to vote",
+          "b) Right to establish and administer educational institutions of their choice",
+          "c) Right to freedom of speech",
+          "d) Right to free legal aid",
+        ],
+        correctAnswer: "b",
+      },
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let shuffledQuestions = [];
+
+    function shuffleQuestions() {
+      shuffledQuestions = questions.sort(() => Math.random() - 0.5);
+    }
+
+    function loadQuestion(index) {
+      const quizContainer = document.getElementById("quiz-container");
+      quizContainer.innerHTML = "";
+
+      const questionObj = shuffledQuestions[index];
+      const questionElement = document.createElement("div");
+      questionElement.className = "question active";
+      questionElement.innerHTML = `
+        <p>${questionObj.question}</p>
+        ${questionObj.options
+          .map(
+            (option, i) => `
+            <label><input type="radio" name="answer" value="${String.fromCharCode(
+              97 + i
+            )}"> ${option}</label>
+        `
+          )
+          .join("")}
+    `;
+      quizContainer.appendChild(questionElement);
+    }
+
+    function nextQuestion() {
+      const selectedAnswer = document.querySelector(
+        'input[name="answer"]:checked'
+      );
+      if (selectedAnswer) {
+        if (
+          selectedAnswer.value ===
+          shuffledQuestions[currentQuestionIndex].correctAnswer
+        ) {
+          score++;
+        }
+        currentQuestionIndex++;
+        if (currentQuestionIndex < shuffledQuestions.length) {
+          loadQuestion(currentQuestionIndex);
+        } else {
+          showResult();
+        }
+      } else {
+        alert("Please select an answer before proceeding.");
+      }
+    }
+
+    function showResult() {
+      const result = document.getElementById("result");
+      result.textContent = `You got ${score} out of ${shuffledQuestions.length} correct.`;
+      result.style.display = "block";
+      document.getElementById("next-button").style.display = "none";
+
+      sendScoreToServer(score);
+    }
+
+    function sendScoreToServer(score) {
+      fetch("/update-score", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ score: score }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Score saved successfully:", data);
+        })
+        .catch((error) => {
+          console.error("Error saving score:", error);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      shuffleQuestions();
+      loadQuestion(currentQuestionIndex);
+    });
+  </script>
+</html>
